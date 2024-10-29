@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Spring Security Example</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+
+<p><a href="/login">login</a></p>
+<p><a href="/hello">Go to hello (AUTHENTICATED USER REQUIRED)</a></p>
+<form th:action="@{/logout}" method="post"> <!-- Thy tự động thay thế thuộc tính th:action bằng URL tương ứng với context của RestapiApplication  -->
+  <input type="submit" value="Sign Out"/>
+</form>
+</body>
+</html>

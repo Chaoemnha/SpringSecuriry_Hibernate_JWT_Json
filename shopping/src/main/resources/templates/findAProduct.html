@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Sản Phẩm</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center mb-4">Tìm Kiếm Sản Phẩm</h1>
+                
+                <div th:if="${PId!=null}" class="alert alert-success">
+                    <table>
+						<tr>
+							<td>Product ID</td>
+							<td th:text="${PId}"></td>
+						</tr>
+						<tr>
+							<td>Product name	</td>
+							<td th:text="${pname}"></td>
+						</tr>
+						<tr>
+							<td>Description</td>
+							<td th:text="${description}"></td>
+						</tr>
+						<tr>
+							<td>Price</td>
+							<td th:text="${price}"></td>
+						</tr>
+					</table>
+                </div>
+                <div th:if="${param.error}" class="alert alert-danger">
+                    Không tìm thấy sản phẩm!
+                </div>
+                
+                <form th:action="@{/findAProduct}" method="POST">
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="searchType" id="searchById" value="id" checked>
+                            <label class="form-check-label" for="searchById">
+                                Tìm theo ID
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="searchType" id="searchByName" value="name">
+                            <label class="form-check-label" for="searchByName">
+                                Tìm theo tên
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="PId" class="form-label">ID Sản phẩm:</label>
+                        <input type="number" class="form-control" id="PId" name="PId">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pname" class="form-label">Tên sản phẩm:</label>
+                        <input type="text" class="form-control" id="pname" name="pname" disabled>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                </form>
+            </div>
+        </div>
+		<div class="card-footer text-center">
+		    <a href="/hello" th:href="@{/hello}">Return hello</a>
+		</div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchById = document.getElementById('searchById');
+            const searchByName = document.getElementById('searchByName');
+            const pidInput = document.getElementById('PId');
+            const pnameInput = document.getElementById('pname');
+
+            function toggleInputs() {
+                if (searchById.checked) {
+                    pidInput.disabled = false;
+                    pnameInput.disabled = true;
+                    pnameInput.value = '';
+                } else {
+                    pidInput.disabled = true;
+                    pnameInput.disabled = false;
+                    pidInput.value = '';
+                }
+            }
+
+            searchById.addEventListener('change', toggleInputs);
+            searchByName.addEventListener('change', toggleInputs);
+
+            // Initial state
+            toggleInputs();
+        });
+    </script>
+</body>
+</html>

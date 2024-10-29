@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" integrity="sha384-oOE/3m0LUMPub4kaC09mrdEhIc+e3exm4xOGxAmuFXhBNF4hcg/6MiAXAf5p0P56" crossorigin="anonymous"/>
+  <title>Hello</title>
+</head>
+<body class="ml-5">
+<h1>Chỉ những ai đăng nhập mới truy cập được trang này!</h1>
+<p>Your current token</p>
+<p><input type="text" id="myString" name="myString" th:value="${token}" disabled/></p>
+<p><a href="/home">Go to home</a></p>
+<p><a href="/findAProduct">Go to findAProduct</a></p>
+<p><a href="/addProduct">Go to addProduct</a></p>
+<p><a href="/listproduct">Go to listproduct</a></p>
+<p><a href="/register">Go to register</a></p>
+<p><a href="/update">Go to update (REQUIRE ADMIN)</a></p>
+<p><a href="/delete">Go to delete (REQUIRE ADMIN)</a></p>
+<p><a href="/list">Go to list (REQUIRE ADMIN OR USER)</a></p>
+<form th:action="@{/logout}" method="post"> <!-- Thy tự động thay thế thuộc tính th:action bằng URL tương ứng với context của RestapiApplication  -->
+  <input type="submit" value="Sign Out"/>
+</form>
+
+</body>
+</html>

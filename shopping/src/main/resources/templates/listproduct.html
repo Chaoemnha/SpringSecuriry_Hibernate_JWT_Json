@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handmade Online Shopping</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="text-center">Handmade Online Shopping</h1>
+            </div>
+            <div class="col-md-4 text-end">
+                <h3>
+                    Welcome <p th:text="${username}"></p>
+                    <p><span th:text="${roles}"></span></p>
+                </h3>
+				<form action="/listcart" method="get" class="d-inline">
+				                    <button type="submit" class="btn btn-primary btn-sm me-2">Check Your Cart</button>
+				                </form>
+				                <form action="/logout" method="post" class="d-inline">
+				                    <button type="submit" class="btn btn-danger btn-sm">Log Out</button>
+				                </form>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col">
+				<form action="/addProduct" method="get">
+					<button type="submit" class="btn btn-success me-2">Add a product</button><span style="font-weight: bold; color: red;">(ONLY FOR ADMIN)</span>
+				</form>
+				<form action="/findAProduct" method="get">
+					<button type="submit" class="btn btn-success me-2">Find A Product</button>
+				</form>
+				<form action="/hello" method="get">
+					<button type="submit" class="btn btn-success me-2">Back to Hello</button>
+				</form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="card mb-3" th:each="product : ${products}">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img th:src="${product.image}" class="img-fluid rounded-start" alt="Product Image">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${product.pname}"></h5>
+                                <p class="card-text">ID: <span th:text="${product.PId}"></span></p>
+                                <p class="card-text" th:text="${product.description}"></p>
+                                <p class="card-text">Price: <span th:text="${#numbers.formatCurrency(product.price)}"></span></p>
+                                <div class="text-end">
+									<form th:action="@{/updateProduct}" method="get" class="d-inline">
+									    <input type="hidden" name="PId" th:value="${product.PId}">
+									    <input type="hidden" name="pname" th:value="${product.pname}">
+									    <input type="hidden" name="description" th:value="${product.description}">
+									    <input type="hidden" name="price" th:value="${product.price}">
+									    <input type="hidden" name="image" th:value="${product.image}">
+									    <button type="submit" class="btn btn-warning btn-sm me-2">Update</button><span style="font-weight: bold; color: red;">(ONLY FOR ADMIN)</span>
+									</form>
+									<form th:action="@{/deleteProduct}" method="post" class="d-inline">
+									    <input type="hidden" name="PId" th:value="${product.PId}">
+									    <button type="submit" class="btn btn-danger btn-sm me-2">Delete</button><span style="font-weight: bold; color: red;">(ONLY FOR ADMIN)</span>
+									</form>
+									<button class="btn btn-primary btn-sm" onclick="openQuantityModal(this)" th:data-product-id="${product.PId}" th:data-product-price="${product.price}">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+					
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- Quantity Modal -->
+	    <div class="modal fade" id="quantityModal" tabindex="-1" aria-labelledby="quantityModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="quantityModalLabel">Nhập số lượng</h5>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	                </div>
+	                <div class="modal-body text-center">
+	                    <input type="number" id="quantity" name="quantity" class="form-control mb-3" value="1" min="1">
+	                    <p>Price: <span id="productPrice"></span>đ</p>
+	                    <p>Total amount: <span id="totalAmount"></span>đ</p>
+	                </div>
+	                <div class="modal-footer">
+	                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
+	                    <button type="button" class="btn btn-primary" onclick="openCartSelectionModal()">Add</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+
+	    <!-- Cart Selection Modal -->
+	    <div class="modal fade" id="cartSelectionModal" tabindex="-1" aria-labelledby="cartSelectionModalLabel" aria-hidden="true">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title" id="cartSelectionModalLabel">Which cart do you want to add</h5>
+	                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	                </div>
+	                <div class="modal-body">
+	                    <div th:each="cart, iterStat : ${carts}" class="mb-2">
+	                        <form th:action="@{/addToACart}" method="post">
+								<input type="hidden" name="username" th:value="${username}">
+	                            <input type="hidden" name="CId" th:value="${iterStat.index}">
+	                            <input type="hidden" class="PId" name="PId">
+	                            <input type="hidden" class="quantity" name="quantity">
+	                            <button type="submit" class="btn btn-outline-primary w-100" th:text="'Cart No.' + ${iterStat.index + 1}"></button>
+	                        </form>
+	                    </div>
+	                    <form th:action="@{/addToACart}" method="post">
+							<input type="hidden" name="username" th:value="${username}">
+	                        <input type="hidden" name="CId" value="-1">
+	                        <input type="hidden" class="PId" name="PId">
+	                        <input type="hidden" class="quantity" name="quantity">
+	                        <button type="submit" class="btn btn-outline-success w-100">A new Cart</button>
+	                    </form>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<div><p id="test"></p></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script>
+	        let currentProductId, currentQuantity;
+	        const quantityModal = new bootstrap.Modal(document.getElementById('quantityModal'));
+	        const cartSelectionModal = new bootstrap.Modal(document.getElementById('cartSelectionModal'));
+
+	        function openQuantityModal(button) {
+	            currentProductId = button.getAttribute('data-product-id'); //Thymeleaf hỗ trợ thêm set thuộc tính cho thẻ
+	            const price = parseFloat(button.getAttribute('data-product-price'));
+	            document.getElementById('productPrice').textContent = price.toLocaleString('en-US'); //Chỉnh kiểu tiền
+	            document.getElementById('quantity').value = 1;
+	            updateTotalAmount();  //hàm set gtri thành tiền dựa vào số lượng
+	            quantityModal.show();
+	        }
+
+	        function updateTotalAmount() {
+	            currentQuantity = parseInt(document.getElementById('quantity').value);
+	            const price = parseFloat(document.getElementById('productPrice').textContent.replace(/,/g, ''));
+	            const total = currentQuantity * price;
+	            document.getElementById('totalAmount').textContent = total.toLocaleString('en-US');
+	        }
+
+	        document.getElementById('quantity').addEventListener('input', updateTotalAmount); //lệnh thêm trình lắng nghe sự kiện nhập
+
+	        function openCartSelectionModal() {
+	            quantityModal.hide();
+	            const a = document.getElementsByClassName('PId');
+	            const b = document.getElementsByClassName('quantity');
+				for(let i=0; i<a.length; i++ ){
+				a[i].value = currentProductId;
+				}
+				for(let i=0; i<b.length; i++ ){
+				b[i].value = currentQuantity;
+				}
+	            document.getElementsByClassName('quantity').value = currentQuantity;
+	            cartSelectionModal.show();
+	        }
+	    </script>
+</body>
+</html>

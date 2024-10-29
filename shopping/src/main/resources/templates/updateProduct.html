@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Update Product</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Update Product</h1>
+        <form th:action="@{/updateProduct}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="PId" class="form-label">Product ID:</label>
+                <input type="text" class="form-control" id="PId" name="PId" th:value="${PId}" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="pname" class="form-label">Product Name:</label>
+                <input type="text" class="form-control" id="pname" name="pname" th:value="${pname}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <input type="text" class="form-control" id="description" name="description" th:value="${description}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label>
+                <input type="number" class="form-control" id="price" name="price" th:value="${price}" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Update Image:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="noUpdateImage" name="updateImage" value="no" checked>
+                    <label class="form-check-label" for="noUpdateImage">Do not update image</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="updateImage" name="updateImage" value="yes">
+                    <label class="form-check-label" for="updateImage">Update image</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="image" class="form-label">New Image:</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" disabled>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current Image:</label>
+                <br>
+                <img th:src="'data:image/jpg;base64,' + ${currentimage}" alt="Current Product Image" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Product</button>
+        </form>
+		<div class="card-footer text-center">
+			<form th:action="@{/listproduct}" method="get" class="d-inline">
+			    <button type="submit" class="btn btn-primary btn-sm">Return to shop</button>
+			</form>
+		</div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('input[name="updateImage"]').forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                var fileInput = document.getElementById("image");
+                fileInput.disabled = (event.target.value === "no");
+            });
+        });
+    </script>
+</body>
+</html>
